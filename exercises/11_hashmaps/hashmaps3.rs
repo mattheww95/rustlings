@@ -34,6 +34,38 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         let team_1_score: u8 = v[2].parse().unwrap();
         let team_2_name = v[1].to_string();
         let team_2_score: u8 = v[3].parse().unwrap();
+        
+        /*
+        scores.entry(team_1_name)
+            .and_modify(|x| {x.goals_scored + team_1_score; x.goals_conceded + team_2_score})
+            .or_insert(Team{goals_scored: team_1_score, goals_conceded: team_2_score});
+        
+        scores.entry(team_2_name)
+        .and_modify(|x| {x.goals_scored + team_2_score; x.goals_conceded + team_1_score})
+        .or_insert(Team{goals_scored: team_2_score, goals_conceded: team_1_score});
+        */
+        
+        
+        if (!scores.contains_key(&team_1_name)) {
+            scores.insert(team_1_name, Team{goals_scored: team_1_score, goals_conceded: team_2_score});
+        }else{
+            let new_score: u8 = scores.get(&team_1_name).unwrap().goals_scored;
+            let new_concede: u8 = scores.get(&team_1_name).unwrap().goals_conceded;
+            scores.insert(team_1_name, Team{goals_scored: new_score + team_1_score, goals_conceded: new_concede + team_2_score});
+        }
+
+        if (!scores.contains_key(&team_2_name)) {
+            scores.insert(team_2_name, Team{goals_scored: team_2_score, goals_conceded: team_1_score});
+        }else{
+            let new_score: u8 = scores.get(&team_2_name).unwrap().goals_scored;
+            let new_concede: u8 = scores.get(&team_2_name).unwrap().goals_conceded;
+            scores.insert(team_2_name, Team{goals_scored: new_score + team_2_score, goals_conceded: new_concede + team_1_score});
+        }
+        
+        
+
+        //scores.insert(team_2_name, Team{goals_scored: team_2_score, goals_conceded: team_1_score});
+
         // TODO: Populate the scores table with details extracted from the
         // current line. Keep in mind that goals scored by team_1
         // will be the number of goals conceded from team_2, and similarly
